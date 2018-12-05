@@ -1,22 +1,21 @@
 <template>
   <div class="user">
     <div class="heading">
-      <img v-if="user.user && !user.user.error" :src="user.user.logo">
+      <img v-if="!user.error" :src="user.logo">
       <img v-else src="http://placeskull.com/100/100">
-      <h2 v-if="user.user.error">{{user.name}}: User Not Found</h2>
-      <h2 v-else>{{user.user.display_name}}</h2>
+      <h2 v-if="user.error">{{name}}: User Not Found</h2>
+      <h2 v-else>{{user.display_name}}</h2>
     </div>
-    <div v-if="user.user && !user.user.error" class="body">
+    <div v-if="!user.error" class="body">
       <div class="bio">
-        <p>{{user.user.bio}}</p>
+        <p>{{user.bio}}</p>
       </div>
-
-      <div v-if="user.stream && user.stream.stream !== null" class="stream">
+      <div v-if="stream && stream.stream !== null" class="stream">
         <div>
           <h4>Stream:</h4>
-          <p>{{user.stream.stream.channel.status}}</p>
+          <p>{{stream.stream.channel.status}}</p>
         </div>
-        <img :src="user.stream.stream.preview.medium">
+        <img :src="stream.stream.preview.medium">
       </div>
       <h4 v-else>Not Streaming</h4>
     </div>
@@ -26,7 +25,7 @@
 <script>
 export default {
   name: 'User',
-  props: ['user']
+  props: ['name', 'user', 'stream']
 };
 </script>
 
