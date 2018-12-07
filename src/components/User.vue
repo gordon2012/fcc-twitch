@@ -5,6 +5,7 @@
       <img v-else src="http://placeskull.com/100/100">
       <h2 v-if="user.error">{{name}}: User Not Found</h2>
       <h2 v-else>{{user.display_name}}</h2>
+      <button @click="deleteUser">✖</button>
     </div>
     <div v-if="!user.error" class="body">
       <div class="bio">
@@ -25,7 +26,12 @@
 <script>
 export default {
   name: 'User',
-  props: ['name', 'user', 'stream']
+  props: ['name', 'user', 'stream'],
+  methods: {
+    deleteUser() {
+      this.$emit('deleteUser');
+    }
+  }
 };
 </script>
 
@@ -58,5 +64,12 @@ export default {
 }
 .stream > div {
   flex: 1;
+}
+button {
+  font-size: 1.3em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  align-self: flex-start;
 }
 </style>

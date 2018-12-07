@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1>Twitch.tv Monitor</h1>
     <div class="container">
       <div class="users">
         <user
@@ -8,6 +9,7 @@
           :name="name"
           :user="user[name]"
           :stream="stream[name]"
+          @deleteUser="deleteUser(name)"
         />
       </div>
     </div>
@@ -52,6 +54,11 @@ export default {
             }
           });
       });
+    },
+    deleteUser(name) {
+      this.names = this.names.filter(n => n !== name);
+      delete this.user[name];
+      delete this.stream[name];
     }
   },
   data() {
@@ -85,6 +92,9 @@ export default {
 body {
   background: #eee;
   margin: 0;
+}
+h1 {
+  text-align: center;
 }
 h4 {
   margin: 0;
