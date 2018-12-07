@@ -2,6 +2,7 @@
   <div id="app">
     <h1>Twitch.tv Monitor</h1>
     <div class="container">
+      <input v-model="searchTerm" v-on:keyup.enter="addUser" placeholder="Search...">
       <div class="users">
         <user
           v-for="name in loadedNames()"
@@ -37,6 +38,24 @@ export default {
         return !!this.user[name];
       });
     },
+
+    fetchUser(name) {
+      fetch(`${url}/users/${name}`)
+        .then(response => response.json())
+        .then(data => {
+          this.user[name] = data;
+          this.$forceUpdate();
+          if (data.status !== 404) {
+            fetch(`${url}/streams/${name}`)
+              .then(response => response.json())
+              .then(data => {
+                this.stream[name] = data;
+                this.$forceUpdate();
+              });
+          }
+        });
+    },
+
     search() {
       this.names.forEach(name => {
         fetch(`${url}/users/${name}`)
@@ -59,10 +78,28 @@ export default {
       this.names = this.names.filter(n => n !== name);
       delete this.user[name];
       delete this.stream[name];
+    },
+    addUser() {
+      const loc = this.names
+        .map(name => name.toLowerCase())
+        .indexOf(this.searchTerm.toLowerCase());
+
+      if (loc === -1) {
+        this.names = [this.searchTerm, ...this.names];
+        this.fetchUser(this.searchTerm);
+      } else {
+        this.names = [
+          this.names[loc],
+          ...this.names.slice(0, loc),
+          ...this.names.slice(loc + 1)
+        ];
+      }
+      this.searchTerm = '';
     }
   },
   data() {
     return {
+      searchTerm: '',
       names: [
         'ESL_SC2',
         'OgamingSC2',
@@ -128,5 +165,8 @@ pre {
 .user-bottom {
   border: 3px solid lime;
   padding: 1em;
+}
+input {
+  margin-bottom: 1em;
 }
 </style>
